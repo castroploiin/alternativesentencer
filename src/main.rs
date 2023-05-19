@@ -1,28 +1,30 @@
-use std::collections::HashMap;
-use json::JsonValue;
-use reqwest;
-// use serde::Deserialize;
+use serde::Deserialize;
 
-#[derive(serde::Deserialize)]
-struct JSON { 
-    value: String
+#[derive(Deserialize, Debug)]
+struct QueryObjects {
+    synonyms: Vec<Synonym>
+}
+#[derive(Deserialize, Debug)]
+struct Synonym {
+    word: String, 
+    score: usize,
+    tags: Vec<String>,
 }
 
-async fn query_with_word(word: &str) -> Result<String, reqwest::Error> {
+#[tokio::main]
+async fn main() -> Result<(), reqwest::Error> {
+    let word = "today";
     let link: &str = &format!("http://api.datamuse.com/words?ml={}", word);
-    let query = reqwest::get(link).await?;
+    let request = reqwest::get(link).await?.text().await?;
+    let end_cutoff = &request.len() - 1;
+    let request_ref = &request[1..end_cutoff];
+    let json = serde_json::from_str::<QueryObjects>(&request_ref);
 
-    Ok(query.json::<String>().await?)
-}
+    println!("{:#?}", request);
+    println!("{:#?}", json);
+    // match json {
+    //     Err(err) => println!("wow")
+    // }
 
-fn print_json(q: Result<String, reqwest::Error>) {
-    match q {
-        Ok(response) => println!("{:?}", response),
-        Err(response) => println!("WARIO"),
-    }
-}
-
-fn main() {
-    let query = query_with_word("contrarian");
-    print_json(query);
+    Ok(())
 }
