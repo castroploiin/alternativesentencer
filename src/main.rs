@@ -1,3 +1,4 @@
+use clap::Parser;
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
@@ -14,7 +15,7 @@ async fn get_synonyms(of_word: &str) -> Result<Vec<Synonym>, reqwest::Error> {
     Ok(query)
 }
 
-async fn rewrite_sentence(sentence: &str) -> Result<String, reqwest::Error> {
+async fn rewrite_sentence(sentence: String) -> Result<String, reqwest::Error> {
     let mut replacing_words: Vec<String> = Vec::new();
     for word in sentence.split(' ') {
         // let synonym = &get_synonyms(word).await?[0].word;
@@ -25,14 +26,20 @@ async fn rewrite_sentence(sentence: &str) -> Result<String, reqwest::Error> {
     Ok(rewritten)
 }
 
-fn parse_arg_sentence() {
+#[derive(Parser, Debug)]
+struct Args {
+    #[arg(short, long)]
+    sentence: String,
+}
 
+fn get_user_sentence() -> String {
+    Args::parse().sentence
 }
 
 #[tokio::main]
 async fn main() -> Result<(), reqwest::Error> {    
-    let s: &str = "incredibly engaging presenter";
-    println!("{}", rewrite_sentence(s).await?);
+    let sentence: String = get_user_sentence();
+    println!("{}", rewrite_sentence(sentence).await?);
 
     Ok(())
 }
