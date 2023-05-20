@@ -9,3 +9,6 @@ After downloading the repository, run the program with `cargo run -- --sentence 
 |-------|--------|
 | "norway has the best prisons" | "norge hour angle gazette top-grade prison house" |
 | "the api i'm using isn't great" | "gazette genus apis i am exploitation is not large" |
+
+## Notice
+The Datamuse API seems to send over incomplete JSON data — either that or I'm misinterpreting the data somehow — and so the program is unlikely to work for sentences containing the most common words.
