@@ -1,11 +1,9 @@
 use clap::Parser;
 use serde::Deserialize;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 struct Synonym {
     word: String, 
-    score: usize,
-    tags: Vec<String>,
 }
 
 async fn get_synonyms(of_word: &str) -> Result<Vec<Synonym>, reqwest::Error> {
@@ -26,7 +24,7 @@ async fn rewrite_sentence(sentence: String) -> Result<String, reqwest::Error> {
     Ok(rewritten)
 }
 
-#[derive(Parser, Debug)]
+#[derive(Parser)]
 struct Args {
     #[arg(short, long)]
     sentence: String,
